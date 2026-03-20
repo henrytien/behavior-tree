@@ -1,3 +1,3 @@
-module github.com/magicsea/behavior3go
+module github.com/henrytien/behavior-tree
 
 go 1.19

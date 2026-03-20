@@ -1,5 +1,5 @@
 # 修正第一个记忆节点无法关闭示例
-关联问题https://github.com/magicsea/behavior3go/issues/17 。  
+关联问题https://github.com/henrytien/behavior-tree/issues/17 。  
 追踪原版的老bug，记忆节点链关闭的第一个会执行不了onclose，导致memseq节点会错误的记录runningChild不清理。   
 错误表现为，因为runningChild没重置，直接从Wait0-2跳入Wait1-2。   
 ### 修复方法 

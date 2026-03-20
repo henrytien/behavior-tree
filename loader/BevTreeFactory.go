@@ -4,12 +4,12 @@ import (
 	_ "fmt"
 	_ "reflect"
 
-	b3 "github.com/magicsea/behavior3go"
-	. "github.com/magicsea/behavior3go/actions"
-	. "github.com/magicsea/behavior3go/composites"
-	. "github.com/magicsea/behavior3go/config"
-	. "github.com/magicsea/behavior3go/core"
-	. "github.com/magicsea/behavior3go/decorators"
+	b3 "github.com/henrytien/behavior-tree"
+	. "github.com/henrytien/behavior-tree/actions"
+	. "github.com/henrytien/behavior-tree/composites"
+	. "github.com/henrytien/behavior-tree/config"
+	. "github.com/henrytien/behavior-tree/core"
+	. "github.com/henrytien/behavior-tree/decorators"
 )
 
 func createBaseStructMaps() *b3.RegisterStructMaps {

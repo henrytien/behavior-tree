@@ -1,8 +1,8 @@
 package core
 
 import (
-	b3 "github.com/magicsea/behavior3go"
-	. "github.com/magicsea/behavior3go/config"
+	b3 "github.com/henrytien/behavior-tree"
+	. "github.com/henrytien/behavior-tree/config"
 )
 
 //子树，通过Name关联树ID查找

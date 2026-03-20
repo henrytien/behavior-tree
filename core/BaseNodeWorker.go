@@ -4,8 +4,8 @@ import (
 	"fmt"
 	_ "fmt"
 
-	b3 "github.com/magicsea/behavior3go"
-	_ "github.com/magicsea/behavior3go/config"
+	b3 "github.com/henrytien/behavior-tree"
+	_ "github.com/henrytien/behavior-tree/config"
 )
 
 type IBaseWorker interface {
