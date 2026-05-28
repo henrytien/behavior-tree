@@ -20,6 +20,8 @@ func createBaseStructMaps() *b3.RegisterStructMaps {
 	st.Register("Runner", &Runner{})
 	st.Register("Succeeder", &Succeeder{})
 	st.Register("Wait", &Wait{})
+	st.Register("RandWait", &RandWait{})
+	st.Register("RandomSleep", &RandWait{}) // compatibility alias
 	st.Register("Log", &Log{})
 	//composites
 	st.Register("MemPriority", &MemPriority{})
@@ -30,6 +32,7 @@ func createBaseStructMaps() *b3.RegisterStructMaps {
 	//decorators
 	st.Register("Inverter", &Inverter{})
 	st.Register("Limiter", &Limiter{})
+	st.Register("Probability", &Probability{})
 	st.Register("MaxTime", &MaxTime{})
 	st.Register("Repeater", &Repeater{})
 	st.Register("RepeatUntilFailure", &RepeatUntilFailure{})

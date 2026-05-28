@@ -2,6 +2,8 @@
 
 golang behavior tree,from https://github.com/behavior3
 
+> This repository is derived from `magicsea/behavior3go` and is now maintained independently under `github.com/henrytien/behavior-tree`.
+
 ## 简介
 
 带在线编辑器的行为树，可使用官方的在线编辑器编辑逻辑节点。  
@@ -39,6 +41,8 @@ bin/b3.json为行为树的数据，在编辑器中新建任意工程，选择（
 ## 更新
 
 * 添加子树支持 SubTree 节点，需要编辑器修改node导出category字段
+* 添加 `RandWait` 随机等待节点：支持 `min_ms/max_ms`，兼容 `timemini/timemax` 与固定 `milliseconds`
+* 添加 `Probability` 概率装饰器：支持 `probability/rate/percent` 与 `skip_status`
 
 ## 其他的参考
 
