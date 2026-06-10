@@ -28,7 +28,7 @@ sidebar_position: 5
 
 - 一些节点的概念：[有道云笔记](http://note.youdao.com/noteshare?id=4f46dc2144ea62b55f597630f5e666b4&sub=FF0B4E1D7916473E8DFC7242CFC62B69)
 - 行为树基础知识：[behaviac concepts](https://www.behaviac.com/concepts/)
-- 其他人写的 behavior3go 代码介绍：[CSDN 博客](https://blog.csdn.net/u013272009/article/details/77131226)
+- 其他人写的旧版 behavior3go 代码介绍：[CSDN 博客](https://blog.csdn.net/u013272009/article/details/77131226)
 - behavior3 的 Erlang 实现（含行为树基础分享）：[behavior3erl](https://github.com/dong50252409/behavior3erl)
 
 ## 上线项目

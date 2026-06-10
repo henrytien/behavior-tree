@@ -13,7 +13,7 @@ sidebar_position: 3
 构造方式有两种：
 
 - **手动构造**：直接设置根节点和子节点。
-- **从配置加载**：通过 `Load` / `CreateBevTreeFromConfig` 从导出的 JSON 数据构建（推荐）。
+- **从配置加载**：通过 `Load` / `CreateBehaviorTreeFromConfig` 从导出的 JSON 数据构建（推荐）。
 
 ## Tick
 

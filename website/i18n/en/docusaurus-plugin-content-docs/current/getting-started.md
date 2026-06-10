@@ -14,6 +14,8 @@ Requires Go 1.23 or later.
 go get github.com/henrytien/behavior-tree
 ```
 
+Keep the module path and package name distinct: the module path is `github.com/henrytien/behavior-tree`, while the root package declaration should be `package behaviortree`. Go package names cannot contain hyphens, so there is no `package behavior-tree`. These examples use `b3` as an explicit import alias for readable references such as `b3.SUCCESS`.
+
 ## Load from a tree file
 
 The most common usage is to design a tree in the [online editor](https://henrytien.github.io/behavior-tree-editor/), export it as JSON, then load and run it in Go.
@@ -58,7 +60,7 @@ func main() {
 	maps.Register("Log", new(LogTest))
 
 	// 3. Build the behavior tree
-	tree := loader.CreateBevTreeFromConfig(treeConfig, maps)
+	tree := loader.CreateBehaviorTreeFromConfig(treeConfig, maps)
 	tree.Print() // print the tree structure
 
 	// 4. One blackboard per object; tick in a loop

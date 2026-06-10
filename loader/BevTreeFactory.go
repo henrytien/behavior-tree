@@ -14,7 +14,7 @@ import (
 
 func createBaseStructMaps() *b3.RegisterStructMaps {
 	st := b3.NewRegisterStructMaps()
-	//actions
+	// Actions.
 	st.Register("Error", &Error{})
 	st.Register("Failer", &Failer{})
 	st.Register("Runner", &Runner{})
@@ -23,13 +23,13 @@ func createBaseStructMaps() *b3.RegisterStructMaps {
 	st.Register("RandWait", &RandWait{})
 	st.Register("RandomSleep", &RandWait{}) // compatibility alias
 	st.Register("Log", &Log{})
-	//composites
+	// Composites.
 	st.Register("MemPriority", &MemPriority{})
 	st.Register("MemSequence", &MemSequence{})
 	st.Register("Priority", &Priority{})
 	st.Register("Sequence", &Sequence{})
 
-	//decorators
+	// Decorators.
 	st.Register("Inverter", &Inverter{})
 	st.Register("Limiter", &Limiter{})
 	st.Register("Probability", &Probability{})
@@ -40,9 +40,17 @@ func createBaseStructMaps() *b3.RegisterStructMaps {
 	return st
 }
 
-func CreateBevTreeFromConfig(config *BTTreeCfg, extMap *b3.RegisterStructMaps) *BehaviorTree {
+// CreateBehaviorTreeFromConfig creates a behavior tree from a configuration.
+func CreateBehaviorTreeFromConfig(config *BTTreeCfg, extMap *b3.RegisterStructMaps) *BehaviorTree {
 	baseMaps := createBaseStructMaps()
-	tree := NewBeTree()
+	tree := NewBehaviorTree()
 	tree.Load(config, baseMaps, extMap)
 	return tree
+}
+
+// CreateBevTreeFromConfig creates a behavior tree from a configuration.
+//
+// Deprecated: use CreateBehaviorTreeFromConfig.
+func CreateBevTreeFromConfig(config *BTTreeCfg, extMap *b3.RegisterStructMaps) *BehaviorTree {
+	return CreateBehaviorTreeFromConfig(config, extMap)
 }

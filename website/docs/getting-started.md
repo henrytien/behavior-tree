@@ -14,6 +14,8 @@ sidebar_position: 2
 go get github.com/henrytien/behavior-tree
 ```
 
+包声明和导入名称需要区分：module path 是 `github.com/henrytien/behavior-tree`，根包声明应为 `package behaviortree`。Go 包名不能包含连字符，因此不会存在 `package behavior-tree`。示例中使用 `b3` 作为显式导入别名，方便调用 `b3.SUCCESS` 等 behavior3 风格常量。
+
 ## 从树文件加载
 
 最常见的用法是在[在线编辑器](https://henrytien.github.io/behavior-tree-editor/)中设计行为树，导出为 JSON，然后在 Go 中加载执行。
@@ -58,7 +60,7 @@ func main() {
 	maps.Register("Log", new(LogTest))
 
 	// 3. 构建行为树
-	tree := loader.CreateBevTreeFromConfig(treeConfig, maps)
+	tree := loader.CreateBehaviorTreeFromConfig(treeConfig, maps)
 	tree.Print() // 打印树结构
 
 	// 4. 每个对象一块黑板，循环 Tick

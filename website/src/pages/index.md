@@ -1,8 +1,8 @@
 ---
-title: behavior3go
+title: behavior-tree
 ---
 
-# behavior3go
+# behavior-tree
 
 ## Golang 行为树 · Behavior Tree for Go
 
@@ -23,4 +23,4 @@ A Go implementation of the [behavior3](https://github.com/behavior3) behavior tr
 - **子树支持 / Subtree support** — 支持 `SubTree` 节点组合复用。
 - **丰富的内建节点 / Rich built-in nodes** — Composite、Decorator、Action、Condition 四大类，含随机等待、概率装饰器等。
 
-> 本仓库源自 `magicsea/behavior3go`，现以 `github.com/henrytien/behavior-tree` 独立维护。
+> `behavior-tree` 是仓库和产品对外品牌，对应 Go module `github.com/henrytien/behavior-tree`。Go 包声明使用 `package behaviortree`，示例可继续使用 `b3` 作为显式导入别名。本仓库源自 `magicsea/behavior3go`，现独立维护。

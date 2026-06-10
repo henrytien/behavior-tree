@@ -5,11 +5,17 @@ sidebar_position: 1
 slug: /intro
 ---
 
-# Introduction to behavior3go
+# Introduction to behavior-tree
 
-`behavior3go` is a Go implementation of the [behavior3](https://github.com/behavior3) behavior tree. You can author logic nodes directly in the official online editor — the data format is kept identical to the original (it was translated from the JS version).
+`behavior-tree` is a Go implementation of the [behavior3](https://github.com/behavior3) behavior tree. You can author logic nodes directly in the official online editor — the data format is kept identical to the original (it was translated from the JS version).
 
-> This repository is derived from `magicsea/behavior3go` and is now maintained independently as `github.com/henrytien/behavior-tree`.
+> `behavior-tree` is the external repository and product brand for the Go module `github.com/henrytien/behavior-tree`. The Go package declaration is `package behaviortree`, not the hyphenated `package behavior-tree`; examples can continue to use `b3` as an explicit import alias. This repository is derived from `magicsea/behavior3go` and is now maintained independently.
+
+## Naming policy
+
+- Use `behavior-tree` for the external brand, repository name, documentation site, and module path.
+- Use `behaviortree` for the Go package declaration because Go identifiers cannot contain hyphens.
+- Documentation examples may continue to use `b3 "github.com/henrytien/behavior-tree"` to keep examples compact and compatible with behavior3-style constants.
 
 ## How it differs from a typical behavior tree
 

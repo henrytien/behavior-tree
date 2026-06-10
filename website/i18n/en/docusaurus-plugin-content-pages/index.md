@@ -1,8 +1,8 @@
 ---
-title: behavior3go
+title: behavior-tree
 ---
 
-# behavior3go
+# behavior-tree
 
 ## Behavior Tree for Go
 
@@ -21,4 +21,4 @@ A Go implementation of the [behavior3](https://github.com/behavior3) behavior tr
 - **SubTree support** — compose and reuse logic with `SubTree` nodes.
 - **Rich built-in nodes** — four categories (Composite, Decorator, Action, Condition), including random wait and probability decorators.
 
-> This repository is derived from `magicsea/behavior3go` and is now maintained independently as `github.com/henrytien/behavior-tree`.
+> `behavior-tree` is the external repository and product brand for the Go module `github.com/henrytien/behavior-tree`. The Go package declaration is `package behaviortree`; examples can continue to use `b3` as an explicit import alias. This repository is derived from `magicsea/behavior3go` and is now maintained independently.

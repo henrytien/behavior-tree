@@ -31,8 +31,8 @@ func TestExample(t *testing.T) {
 
 }
 
-///////////////////////加载事例///////////////////////////
-//自定义action节点
+// /////////////////////加载事例///////////////////////////
+// 自定义action节点
 type LogTest struct {
 	Action
 	info string
@@ -56,7 +56,7 @@ func TestLoadTree(t *testing.T) {
 		maps.Register("Log", new(LogTest))
 
 		//载入
-		tree := CreateBevTreeFromConfig(treeConfig, maps)
+		tree := CreateBehaviorTreeFromConfig(treeConfig, maps)
 		tree.Print()
 
 		//输入板

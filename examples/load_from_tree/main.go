@@ -23,7 +23,7 @@ func main() {
 	maps.Register("Log", new(LogTest))
 
 	//载入
-	tree := CreateBevTreeFromConfig(treeConfig, maps)
+	tree := CreateBehaviorTreeFromConfig(treeConfig, maps)
 	tree.Print()
 
 	//输入板

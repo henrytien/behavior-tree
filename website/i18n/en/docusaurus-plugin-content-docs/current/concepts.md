@@ -13,7 +13,7 @@ sidebar_position: 3
 There are two ways to build one:
 
 - **Manual construction**: set the root node and its children directly.
-- **Load from config**: build from exported JSON via `Load` / `CreateBevTreeFromConfig` (recommended).
+- **Load from config**: build from exported JSON via `Load` / `CreateBehaviorTreeFromConfig` (recommended).
 
 ## Tick
 

@@ -1,17 +1,24 @@
-# behavior3go
+# behavior-tree
 
-golang behavior tree,from https://github.com/behavior3
+Go behavior tree implementation derived from https://github.com/behavior3
 
-> This repository is derived from `magicsea/behavior3go` and is now maintained independently under `github.com/henrytien/behavior-tree`.
+> `behavior-tree` is the external repository and product brand for the module `github.com/henrytien/behavior-tree`. The project is derived from `magicsea/behavior3go` and is now maintained independently.
 
 📖 **文档站 / Documentation:** https://henrytien.github.io/behavior-tree/
 ✏️ **在线编辑器 / Online editor:** https://henrytien.github.io/behavior-tree-editor/
+
+## Naming policy
+
+- Repository, module path, and documentation brand: `behavior-tree` / `github.com/henrytien/behavior-tree`.
+- Go package declaration: `package behaviortree`. Go package declarations cannot contain hyphens, so the package declaration is not `behavior-tree`.
+- Examples may use the explicit import alias `b3` for readability and compatibility with behavior3-style constants.
 
 ## 简介
 
 带在线编辑器的行为树，可使用[在线编辑器](https://henrytien.github.io/behavior-tree-editor/)编辑逻辑节点。  
 使用js版本翻译，保持和原版的编辑器数据格式一致。   
 此行为树和一般的行为树略有不同，行为树结构只保持一份无状态，状态记录在黑板里（一般行为树每个对象一份树结构，树结构保存状态）。  
+文档和站点统一使用 `behavior-tree` 作为外部品牌；Go 包声明使用 `behaviortree`；示例中可以继续使用 `b3` 作为显式导入别名。  
 专用的编辑器分支版本：[behavior-tree-editor](https://henrytien.github.io/behavior-tree-editor/)
 
 ## 示例 Examples
@@ -50,7 +57,7 @@ bin/b3.json为行为树的数据，在编辑器中新建任意工程，选择（
 
 - 一些节点的概念 http://note.youdao.com/noteshare?id=4f46dc2144ea62b55f597630f5e666b4&sub=FF0B4E1D7916473E8DFC7242CFC62B69
 - 其他项目基础知识 https://www.behaviac.com/concepts/
-- 其他人写的behavior3go代码介绍 https://blog.csdn.net/u013272009/article/details/77131226
+- 其他人写的旧版 behavior3go 代码介绍 https://blog.csdn.net/u013272009/article/details/77131226
 - behavior3的erlang实现，同时里面有一些行为树基础分享：https://github.com/dong50252409/behavior3erl
 ## FAQ
 - Q:子树的相同记忆节点的黑板信息是重复的？

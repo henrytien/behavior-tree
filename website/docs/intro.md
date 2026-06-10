@@ -5,11 +5,17 @@ sidebar_position: 1
 slug: /intro
 ---
 
-# behavior3go 简介
+# behavior-tree 简介
 
-`behavior3go` 是一个基于 [behavior3](https://github.com/behavior3) 的 Go 行为树实现，可直接使用官方在线编辑器编辑逻辑节点，并保持与原版编辑器一致的数据格式（使用 JS 版本翻译而来）。
+`behavior-tree` 是一个基于 [behavior3](https://github.com/behavior3) 的 Go 行为树实现，可直接使用官方在线编辑器编辑逻辑节点，并保持与原版编辑器一致的数据格式（使用 JS 版本翻译而来）。
 
-> 本仓库源自 `magicsea/behavior3go`，现以 `github.com/henrytien/behavior-tree` 独立维护。
+> `behavior-tree` 是仓库和产品对外品牌，对应 Go module `github.com/henrytien/behavior-tree`。Go 包声明使用 `package behaviortree`，不能写成带连字符的 `package behavior-tree`；示例可继续使用 `b3` 作为显式导入别名。本仓库源自 `magicsea/behavior3go`，现独立维护。
+
+## 命名规则
+
+- 对外品牌、仓库名、文档站和 module path 使用 `behavior-tree`。
+- Go package declaration 使用 `behaviortree`，因为 Go 标识符不能包含连字符。
+- 文档示例可继续写 `b3 "github.com/henrytien/behavior-tree"`，用于保持示例简短并兼容 behavior3 风格的常量命名。
 
 ## 与一般行为树的区别
 

@@ -3,7 +3,7 @@ const {themes} = require('prism-react-renderer');
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: 'behavior3go',
+  title: 'behavior-tree',
   tagline: 'Golang 行为树 / Behavior Tree for Go',
   favicon: 'img/favicon.ico',
 
@@ -28,7 +28,7 @@ const config = {
       tagName: 'meta',
       attributes: {
         name: 'keywords',
-        content: 'behavior tree, behavior3, golang, go, AI, game AI, 行为树, behavior3go',
+        content: 'behavior-tree, behavior tree, behavior3, golang, go, AI, game AI, 行为树',
       },
     },
     {
@@ -74,10 +74,10 @@ const config = {
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
       metadata: [
-        {name: 'description', content: 'behavior3go — a Go implementation of the behavior3 behavior tree, compatible with the official online editor.'},
+        {name: 'description', content: 'behavior-tree - a Go behavior tree module; root package declaration uses behaviortree and examples may alias it as b3.'},
       ],
       navbar: {
-        title: 'behavior3go',
+        title: 'behavior-tree',
         items: [
           {
             type: 'docSidebar',
