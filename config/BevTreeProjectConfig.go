@@ -3,7 +3,7 @@ package config
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"os"
 )
 
 //工程json类型
@@ -18,7 +18,7 @@ type BTProjectCfg struct {
 func LoadProjectCfg(path string) (*BTProjectCfg, bool) {
 
 	var project BTProjectCfg
-	file, err := ioutil.ReadFile(path)
+	file, err := os.ReadFile(path)
 	if err != nil {
 		fmt.Println("LoadProjectCfg fail:", err)
 		return nil, false

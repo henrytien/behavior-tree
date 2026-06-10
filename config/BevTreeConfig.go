@@ -3,10 +3,10 @@ package config
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"os"
 )
 
-//编辑器地址@http://editor.behavior3.com/#/editor
+//编辑器地址@https://henrytien.github.io/behavior-tree-editor/
 //节点json类型
 type BTNodeCfg struct {
 	Id          string                 `json:"id"`
@@ -24,13 +24,11 @@ func (this *BTNodeCfg) GetProperty(name string) float64 {
 	v, ok := this.Properties[name]
 	if !ok {
 		panic("GetProperty err ,no vlaue:" + name)
-		return 0
 	}
 	f64, fok := v.(float64)
 	if !fok {
 		fmt.Println("GetProperty err ,format not fload64:", name, v)
 		panic("GetProperty err ,format not fload64:" + name)
-		return 0
 	}
 	return f64
 }
@@ -59,7 +57,6 @@ func (this *BTNodeCfg) GetPropertyAsBool(name string) bool {
 		}
 		fmt.Println("GetProperty err ,format not bool:", name, v)
 		panic("GetProperty err ,format not bool:" + name)
-		return false
 	}
 	return b
 }
@@ -67,7 +64,6 @@ func (this *BTNodeCfg) GetPropertyAsString(name string) string {
 	v, ok := this.Properties[name]
 	if !ok {
 		panic("GetProperty err ,no vlaue:" + name)
-		return ""
 	}
 
 	str, fok := v.(string)
@@ -91,7 +87,7 @@ type BTTreeCfg struct {
 func LoadTreeCfg(path string) (*BTTreeCfg, bool) {
 
 	var tree BTTreeCfg
-	file, err := ioutil.ReadFile(path)
+	file, err := os.ReadFile(path)
 	if err != nil {
 		fmt.Println("fail:", err)
 		return nil, false
