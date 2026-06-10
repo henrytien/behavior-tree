@@ -1,0 +1,30 @@
+{
+  "link.title.Docs": {
+    "message": "Docs",
+    "description": "The title of the footer links column with title=Docs in the footer"
+  },
+  "link.title.More": {
+    "message": "More",
+    "description": "The title of the footer links column with title=More in the footer"
+  },
+  "link.item.label.简介 / Intro": {
+    "message": "Introduction",
+    "description": "The label of footer link with label=简介 / Intro"
+  },
+  "link.item.label.节点参考 / Nodes": {
+    "message": "Node Reference",
+    "description": "The label of footer link with label=节点参考 / Nodes"
+  },
+  "link.item.label.GitHub": {
+    "message": "GitHub",
+    "description": "The label of footer link with label=GitHub"
+  },
+  "link.item.label.在线编辑器 / Editor": {
+    "message": "Online Editor",
+    "description": "The label of footer link with label=在线编辑器 / Editor"
+  },
+  "copyright": {
+    "message": "Copyright © 2026 henrytien. Built with Docusaurus.",
+    "description": "The footer copyright"
+  }
+}

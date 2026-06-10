@@ -1,0 +1,14 @@
+{
+  "title": {
+    "message": "behavior3go",
+    "description": "The title in the navbar"
+  },
+  "item.label.文档 / Docs": {
+    "message": "Docs",
+    "description": "Navbar item with label 文档 / Docs"
+  },
+  "item.label.GitHub": {
+    "message": "GitHub",
+    "description": "Navbar item with label GitHub"
+  }
+}
