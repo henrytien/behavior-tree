@@ -1,7 +1,7 @@
 package core
 
 import (
-	b3 "github.com/henrytien/behavior-tree"
+	bt "github.com/henrytien/behavior-tree"
 	. "github.com/henrytien/behavior-tree/config"
 )
 
@@ -16,7 +16,7 @@ type Condition struct {
 
 func (this *Condition) Ctor() {
 
-	this.category = b3.CONDITION
+	this.category = bt.CONDITION
 }
 
 /**

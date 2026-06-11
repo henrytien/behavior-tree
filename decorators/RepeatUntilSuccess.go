@@ -1,7 +1,7 @@
 package decorators
 
 import (
-	b3 "github.com/henrytien/behavior-tree"
+	bt "github.com/henrytien/behavior-tree"
 	. "github.com/henrytien/behavior-tree/config"
 	. "github.com/henrytien/behavior-tree/core"
 )
@@ -53,18 +53,18 @@ func (this *RepeatUntilSuccess) OnOpen(tick *Tick) {
 /**
  * Tick method.
  * @method tick
- * @param {b3.Tick} tick A tick instance.
+ * @param {bt.Tick} tick A tick instance.
  * @return {Constant} A state constant.
 **/
-func (this *RepeatUntilSuccess) OnTick(tick *Tick) b3.Status {
+func (this *RepeatUntilSuccess) OnTick(tick *Tick) bt.Status {
 	if this.GetChild() == nil {
-		return b3.ERROR
+		return bt.ERROR
 	}
 	var i = tick.Blackboard.GetInt("i", tick.GetTree().GetID(), this.GetID())
-	var status = b3.ERROR
+	var status = bt.ERROR
 	for this.maxLoop < 0 || i < this.maxLoop {
 		status = this.GetChild().Execute(tick)
-		if status == b3.FAILURE {
+		if status == bt.FAILURE {
 			i++
 		} else {
 			break

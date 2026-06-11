@@ -3,7 +3,7 @@ package core
 import (
 	"fmt"
 
-	b3 "github.com/henrytien/behavior-tree"
+	bt "github.com/henrytien/behavior-tree"
 	"github.com/henrytien/behavior-tree/config"
 )
 
@@ -41,7 +41,7 @@ func NewBeTree() *BehaviorTree {
 
 // Initialize resets the tree to its default state.
 func (tree *BehaviorTree) Initialize() {
-	tree.id = b3.CreateUUID()
+	tree.id = bt.CreateUUID()
 	tree.title = "The behavior tree"
 	tree.description = "Default description"
 	tree.properties = make(map[string]interface{})
@@ -81,7 +81,7 @@ func (tree *BehaviorTree) GetRoot() IBaseNode {
 // data must follow the editor-compatible Behavior3 JSON model. Built-in nodes
 // are resolved from maps, while custom nodes can be supplied through extMaps
 // using the node names present in data.
-func (tree *BehaviorTree) Load(data *config.BTTreeCfg, maps *b3.RegisterStructMaps, extMaps *b3.RegisterStructMaps) {
+func (tree *BehaviorTree) Load(data *config.BTTreeCfg, maps *bt.RegisterStructMaps, extMaps *bt.RegisterStructMaps) {
 	tree.title = data.Title
 	tree.description = data.Description
 	tree.properties = data.Properties
@@ -118,13 +118,13 @@ func (tree *BehaviorTree) Load(data *config.BTTreeCfg, maps *b3.RegisterStructMa
 	for id, spec := range data.Nodes {
 		node := nodes[id]
 
-		if node.GetCategory() == b3.COMPOSITE && spec.Children != nil {
+		if node.GetCategory() == bt.COMPOSITE && spec.Children != nil {
 			for i := 0; i < len(spec.Children); i++ {
 				childID := spec.Children[i]
 				comp := node.(IComposite)
 				comp.AddChild(nodes[childID])
 			}
-		} else if node.GetCategory() == b3.DECORATOR && len(spec.Child) > 0 {
+		} else if node.GetCategory() == bt.DECORATOR && len(spec.Child) > 0 {
 			dec := node.(IDecorator)
 			dec.SetChild(nodes[spec.Child])
 		}
@@ -143,9 +143,9 @@ func (tree *BehaviorTree) dump() *config.BTTreeCfg {
 // target is passed through to custom nodes. blackboard stores runtime execution
 // state, including open nodes from previous ticks. Tick panics if blackboard is
 // nil.
-func (tree *BehaviorTree) Tick(target interface{}, blackboard *Blackboard) b3.Status {
+func (tree *BehaviorTree) Tick(target interface{}, blackboard *Blackboard) bt.Status {
 	if blackboard == nil {
-		panic("The blackboard parameter is obligatory and must be an instance of b3.Blackboard")
+		panic("The blackboard parameter is obligatory and must be an instance of bt.Blackboard")
 	}
 
 	tick := NewTick()
@@ -168,7 +168,7 @@ func (tree *BehaviorTree) Tick(target interface{}, blackboard *Blackboard) b3.St
 
 	// Compute the close range for nodes left open by the previous tick.
 	start := 0
-	for i := 0; i < b3.MinInt(len(lastOpenNodes), len(currOpenNodes)); i++ {
+	for i := 0; i < bt.MinInt(len(lastOpenNodes), len(currOpenNodes)); i++ {
 		start = i
 		if lastOpenNodes[i] != currOpenNodes[i] {
 			break
@@ -197,7 +197,7 @@ func printNode(root IBaseNode, indent int) {
 
 	fmt.Print("|—", root.GetTitle())
 
-	if root.GetCategory() == b3.DECORATOR {
+	if root.GetCategory() == bt.DECORATOR {
 		dec := root.(IDecorator)
 		if dec.GetChild() != nil {
 			printNode(dec.GetChild(), indent+3)
@@ -205,7 +205,7 @@ func printNode(root IBaseNode, indent int) {
 	}
 
 	fmt.Println("")
-	if root.GetCategory() == b3.COMPOSITE {
+	if root.GetCategory() == bt.COMPOSITE {
 		comp := root.(IComposite)
 		for i := 0; i < comp.GetChildCount(); i++ {
 			printNode(comp.GetChild(i), indent+3)

@@ -68,7 +68,7 @@ func (this *BTNodeCfg) GetPropertyAsString(name string) string {
 
 	str, fok := v.(string)
 	if !fok {
-		return fmt.Sprintf("%v",v)
+		return fmt.Sprintf("%v", v)
 	}
 	return str
 }

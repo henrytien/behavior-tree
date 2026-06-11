@@ -1,7 +1,7 @@
 package core
 
 import (
-	b3 "github.com/henrytien/behavior-tree"
+	bt "github.com/henrytien/behavior-tree"
 	. "github.com/henrytien/behavior-tree/config"
 )
 
@@ -21,7 +21,7 @@ type Composite struct {
 
 func (this *Composite) Ctor() {
 
-	this.category = b3.COMPOSITE
+	this.category = bt.COMPOSITE
 }
 
 /**
@@ -46,16 +46,16 @@ func (this *Composite) GetChildCount() int {
 	return len(this.children)
 }
 
-//GetChild
+// GetChild
 func (this *Composite) GetChild(index int) IBaseNode {
 	return this.children[index]
 }
 
-//AddChild
+// AddChild
 func (this *Composite) AddChild(child IBaseNode) {
 	this.children = append(this.children, child)
 }
-func (this *Composite) tick(tick *Tick) b3.Status {
-	b3.Logf("tick Composite1")
-	return b3.ERROR
+func (this *Composite) tick(tick *Tick) bt.Status {
+	bt.Logf("tick Composite1")
+	return bt.ERROR
 }

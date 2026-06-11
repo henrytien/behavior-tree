@@ -7,7 +7,7 @@ import (
 	"sync/atomic"
 	"time"
 
-	b3 "github.com/henrytien/behavior-tree"
+	bt "github.com/henrytien/behavior-tree"
 	. "github.com/henrytien/behavior-tree/config"
 	. "github.com/henrytien/behavior-tree/core"
 )
@@ -29,7 +29,7 @@ var probabilitySeedCounter int64
 type Probability struct {
 	Decorator
 	probability float64
-	skipStatus  b3.Status
+	skipStatus  bt.Status
 }
 
 func (this *Probability) Initialize(setting *BTNodeCfg) {
@@ -48,11 +48,11 @@ func (this *Probability) Initialize(setting *BTNodeCfg) {
 
 	switch strings.ToLower(strings.TrimSpace(getStringPropertyDefault(setting, "skip_status", "success"))) {
 	case "failure", "fail":
-		this.skipStatus = b3.FAILURE
+		this.skipStatus = bt.FAILURE
 	case "error":
-		this.skipStatus = b3.ERROR
+		this.skipStatus = bt.ERROR
 	default:
-		this.skipStatus = b3.SUCCESS
+		this.skipStatus = bt.SUCCESS
 	}
 }
 
@@ -65,9 +65,9 @@ func (this *Probability) OnOpen(tick *Tick) {
 	tick.Blackboard.Set("shouldRun", shouldRun, tick.GetTree().GetID(), this.GetID())
 }
 
-func (this *Probability) OnTick(tick *Tick) b3.Status {
+func (this *Probability) OnTick(tick *Tick) bt.Status {
 	if this.GetChild() == nil {
-		return b3.ERROR
+		return bt.ERROR
 	}
 	shouldRun := tick.Blackboard.GetBool("shouldRun", tick.GetTree().GetID(), this.GetID())
 	if !shouldRun {

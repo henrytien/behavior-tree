@@ -6,7 +6,7 @@ import (
 	"sync/atomic"
 	"time"
 
-	b3 "github.com/henrytien/behavior-tree"
+	bt "github.com/henrytien/behavior-tree"
 	. "github.com/henrytien/behavior-tree/config"
 	. "github.com/henrytien/behavior-tree/core"
 )
@@ -52,16 +52,16 @@ func (this *RandWait) OnOpen(tick *Tick) {
 	tick.Blackboard.Set("duration", duration, treeID, nodeID)
 }
 
-func (this *RandWait) OnTick(tick *Tick) b3.Status {
+func (this *RandWait) OnTick(tick *Tick) bt.Status {
 	currTime := time.Now().UnixNano() / int64(time.Millisecond)
 	treeID := tick.GetTree().GetID()
 	nodeID := this.GetID()
 	startTime := tick.Blackboard.GetInt64("startTime", treeID, nodeID)
 	duration := tick.Blackboard.GetInt64("duration", treeID, nodeID)
 	if currTime-startTime >= duration {
-		return b3.SUCCESS
+		return bt.SUCCESS
 	}
-	return b3.RUNNING
+	return bt.RUNNING
 }
 
 func (this *RandWait) randomDurationMs() int64 {

@@ -2,7 +2,7 @@ package share
 
 import (
 	"fmt"
-	b3 "github.com/henrytien/behavior-tree"
+	bt "github.com/henrytien/behavior-tree"
 	//. "github.com/henrytien/behavior-tree/actions"
 	//. "github.com/henrytien/behavior-tree/composites"
 	. "github.com/henrytien/behavior-tree/config"
@@ -10,7 +10,7 @@ import (
 	//. "github.com/henrytien/behavior-tree/decorators"
 )
 
-//自定义action节点
+// 自定义action节点
 type LogTest struct {
 	Action
 	info string
@@ -21,7 +21,7 @@ func (this *LogTest) Initialize(setting *BTNodeCfg) {
 	this.info = setting.GetPropertyAsString("info")
 }
 
-func (this *LogTest) OnTick(tick *Tick) b3.Status {
-	fmt.Println("logtest:",tick.GetLastSubTree(), this.info)
-	return b3.SUCCESS
+func (this *LogTest) OnTick(tick *Tick) bt.Status {
+	fmt.Println("logtest:", tick.GetLastSubTree(), this.info)
+	return bt.SUCCESS
 }

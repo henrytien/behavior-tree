@@ -1,7 +1,7 @@
 package actions
 
 import (
-	b3 "github.com/henrytien/behavior-tree"
+	bt "github.com/henrytien/behavior-tree"
 	. "github.com/henrytien/behavior-tree/config"
 	. "github.com/henrytien/behavior-tree/core"
 	"time"
@@ -52,13 +52,13 @@ func (this *Wait) OnOpen(tick *Tick) {
  * @param {Tick} tick A tick instance.
  * @return {Constant} A state constant.
 **/
-func (this *Wait) OnTick(tick *Tick) b3.Status {
+func (this *Wait) OnTick(tick *Tick) bt.Status {
 	var currTime int64 = time.Now().UnixNano() / 1000000
 	var startTime = tick.Blackboard.GetInt64("startTime", tick.GetTree().GetID(), this.GetID())
 	//fmt.Println("wait:",this.GetTitle(),tick.GetLastSubTree(),"=>", currTime-startTime)
 	if currTime-startTime > this.endTime {
-		return b3.SUCCESS
+		return bt.SUCCESS
 	}
 
-	return b3.RUNNING
+	return bt.RUNNING
 }

@@ -3,15 +3,15 @@ package core
 import (
 	_ "fmt"
 
-	b3 "github.com/henrytien/behavior-tree"
+	bt "github.com/henrytien/behavior-tree"
 	. "github.com/henrytien/behavior-tree/config"
 )
 
 type IBaseWrapper interface {
-	_execute(tick *Tick) b3.Status
+	_execute(tick *Tick) bt.Status
 	_enter(tick *Tick)
 	_open(tick *Tick)
-	_tick(tick *Tick) b3.Status
+	_tick(tick *Tick) bt.Status
 	_close(tick *Tick)
 	_exit(tick *Tick)
 }
@@ -21,7 +21,7 @@ type IBaseNode interface {
 	Ctor()
 	Initialize(params *BTNodeCfg)
 	GetCategory() string
-	Execute(tick *Tick) b3.Status
+	Execute(tick *Tick) bt.Status
 	GetName() string
 	GetTitle() string
 	SetBaseNodeWorker(worker IBaseWorker)
@@ -33,8 +33,8 @@ type IBaseNode interface {
  * comprises all common variables and methods that a node must have to
  * execute.
  *
- * **IMPORTANT:** Do not inherit from this class, use `b3.Composite`,
- * `b3.Decorator`, `b3.Action` or `b3.Condition`, instead.
+ * **IMPORTANT:** Do not inherit from this class, use `bt.Composite`,
+ * `bt.Decorator`, `bt.Action` or `bt.Condition`, instead.
  *
  * The attributes are specially designed to serialization of the node in a
  * JSON format. In special, the `parameters` attribute can be set into the
@@ -68,8 +68,8 @@ type BaseNode struct {
 	name string
 
 	/**
-	 * Node category. Must be `b3.COMPOSITE`, `b3.DECORATOR`, `b3.ACTION` or
-	 * `b3.CONDITION`. This is defined automatically be inheriting the
+	 * Node category. Must be `bt.COMPOSITE`, `bt.DECORATOR`, `bt.ACTION` or
+	 * `bt.CONDITION`. This is defined automatically be inheriting the
 	 * correspondent class.
 	 *
 	 * @property {CONSTANT} category
@@ -144,7 +144,7 @@ func (this *BaseNode) GetBaseNodeWorker() IBaseWorker {
  * @construCtor
 **/
 func (this *BaseNode) Initialize(params *BTNodeCfg) {
-	//this.id = b3.CreateUUID()
+	//this.id = bt.CreateUUID()
 	//this.title       = this.title || this.name
 	this.description = ""
 	this.parameters = make(map[string]interface{})
@@ -179,14 +179,14 @@ func (this *BaseNode) GetTitle() string {
  * method calls all callbacks: `enter`, `open`, `tick`, `close`, and
  * `exit`. It only opens a node if it is not already open. In the same
  * way, this method only close a node if the node  returned a status
- * different of `b3.RUNNING`.
+ * different of `bt.RUNNING`.
  *
  * @method _execute
  * @param {Tick} tick A tick instance.
  * @return {Constant} The tick state.
  * @protected
 **/
-func (this *BaseNode) _execute(tick *Tick) b3.Status {
+func (this *BaseNode) _execute(tick *Tick) bt.Status {
 	//fmt.Println("_execute :", this.title)
 	// ENTER
 	this._enter(tick)
@@ -200,7 +200,7 @@ func (this *BaseNode) _execute(tick *Tick) b3.Status {
 	var status = this._tick(tick)
 
 	// CLOSE
-	if status != b3.RUNNING {
+	if status != bt.RUNNING {
 		this._close(tick)
 	}
 
@@ -209,7 +209,7 @@ func (this *BaseNode) _execute(tick *Tick) b3.Status {
 
 	return status
 }
-func (this *BaseNode) Execute(tick *Tick) b3.Status {
+func (this *BaseNode) Execute(tick *Tick) bt.Status {
 	return this._execute(tick)
 }
 
@@ -244,7 +244,7 @@ func (this *BaseNode) _open(tick *Tick) {
  * @return {Constant} A state constant.
  * @protected
 **/
-func (this *BaseNode) _tick(tick *Tick) b3.Status {
+func (this *BaseNode) _tick(tick *Tick) bt.Status {
 	//fmt.Println("_tick :", this.title)
 	tick._tickNode(this)
 	return this.OnTick(tick)

@@ -3,7 +3,7 @@ package decorators
 import (
 	"time"
 
-	b3 "github.com/henrytien/behavior-tree"
+	bt "github.com/henrytien/behavior-tree"
 	. "github.com/henrytien/behavior-tree/config"
 	. "github.com/henrytien/behavior-tree/core"
 )
@@ -56,18 +56,18 @@ func (this *MaxTime) OnOpen(tick *Tick) {
 /**
  * Tick method.
  * @method tick
- * @param {b3.Tick} tick A tick instance.
+ * @param {bt.Tick} tick A tick instance.
  * @return {Constant} A state constant.
 **/
-func (this *MaxTime) OnTick(tick *Tick) b3.Status {
+func (this *MaxTime) OnTick(tick *Tick) bt.Status {
 	if this.GetChild() == nil {
-		return b3.ERROR
+		return bt.ERROR
 	}
 	var currTime int64 = time.Now().UnixNano() / 1000000
 	var startTime int64 = tick.Blackboard.GetInt64("startTime", tick.GetTree().GetID(), this.GetID())
 	var status = this.GetChild().Execute(tick)
 	if currTime-startTime > this.maxTime {
-		return b3.FAILURE
+		return bt.FAILURE
 	}
 
 	return status

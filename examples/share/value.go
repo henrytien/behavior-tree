@@ -1,7 +1,7 @@
 package share
 
 import (
-	b3 "github.com/henrytien/behavior-tree"
+	bt "github.com/henrytien/behavior-tree"
 	//. "github.com/henrytien/behavior-tree/actions"
 	//. "github.com/henrytien/behavior-tree/composites"
 	. "github.com/henrytien/behavior-tree/config"
@@ -9,11 +9,11 @@ import (
 	//. "github.com/henrytien/behavior-tree/decorators"
 )
 
-//自定义action节点
+// 自定义action节点
 type SetValue struct {
 	Action
 	value int
-	key string
+	key   string
 }
 
 func (this *SetValue) Initialize(setting *BTNodeCfg) {
@@ -22,17 +22,16 @@ func (this *SetValue) Initialize(setting *BTNodeCfg) {
 	this.key = setting.GetPropertyAsString("key")
 }
 
-func (this *SetValue) OnTick(tick *Tick) b3.Status {
-	tick.Blackboard.SetMem(this.key,this.value)
-	return b3.SUCCESS
+func (this *SetValue) OnTick(tick *Tick) bt.Status {
+	tick.Blackboard.SetMem(this.key, this.value)
+	return bt.SUCCESS
 }
 
-
-//自定义action节点
+// 自定义action节点
 type IsValue struct {
 	Condition
 	value int
-	key string
+	key   string
 }
 
 func (this *IsValue) Initialize(setting *BTNodeCfg) {
@@ -41,10 +40,10 @@ func (this *IsValue) Initialize(setting *BTNodeCfg) {
 	this.key = setting.GetPropertyAsString("key")
 }
 
-func (this *IsValue) OnTick(tick *Tick) b3.Status {
-	v := tick.Blackboard.GetInt(this.key,"","")
-	if v==this.value {
-		return b3.SUCCESS
+func (this *IsValue) OnTick(tick *Tick) bt.Status {
+	v := tick.Blackboard.GetInt(this.key, "", "")
+	if v == this.value {
+		return bt.SUCCESS
 	}
-	return b3.FAILURE
+	return bt.FAILURE
 }

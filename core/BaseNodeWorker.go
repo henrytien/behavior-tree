@@ -1,7 +1,7 @@
 package core
 
 import (
-	b3 "github.com/henrytien/behavior-tree"
+	bt "github.com/henrytien/behavior-tree"
 	_ "github.com/henrytien/behavior-tree/config"
 )
 
@@ -19,7 +19,7 @@ type IBaseWorker interface {
 	 * Open method, override this to use. It is called only before the tick
 	 * callback and only if the not isn't closed.
 	 *
-	 * Note: a node will be closed if it returned `b3.RUNNING` in the tick.
+	 * Note: a node will be closed if it returned `bt.RUNNING` in the tick.
 	 *
 	 * @method open
 	 * @param {Tick} tick A tick instance.
@@ -33,11 +33,11 @@ type IBaseWorker interface {
 	 * @method tick
 	 * @param {Tick} tick A tick instance.
 	**/
-	OnTick(tick *Tick) b3.Status
+	OnTick(tick *Tick) bt.Status
 	/**
 	 * Close method, override this to use. This method is called after the tick
 	 * callback, and only if the tick return a state different from
-	 * `b3.RUNNING`.
+	 * `bt.RUNNING`.
 	 *
 	 * @method close
 	 * @param {Tick} tick A tick instance.
@@ -70,7 +70,7 @@ func (this *BaseWorker) OnEnter(tick *Tick) {
  * Open method, override this to use. It is called only before the tick
  * callback and only if the not isn't closed.
  *
- * Note: a node will be closed if it returned `b3.RUNNING` in the tick.
+ * Note: a node will be closed if it returned `bt.RUNNING` in the tick.
  *
  * @method open
  * @param {Tick} tick A tick instance.
@@ -87,15 +87,15 @@ func (this *BaseWorker) OnOpen(tick *Tick) {
  * @method tick
  * @param {Tick} tick A tick instance.
 **/
-func (this *BaseWorker) OnTick(tick *Tick) b3.Status {
-	b3.Logf("tick BaseWorker")
-	return b3.ERROR
+func (this *BaseWorker) OnTick(tick *Tick) bt.Status {
+	bt.Logf("tick BaseWorker")
+	return bt.ERROR
 }
 
 /**
  * Close method, override this to use. This method is called after the tick
  * callback, and only if the tick return a state different from
- * `b3.RUNNING`.
+ * `bt.RUNNING`.
  *
  * @method close
  * @param {Tick} tick A tick instance.

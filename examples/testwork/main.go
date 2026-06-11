@@ -5,7 +5,7 @@ package main
 
 import (
 	"fmt"
-	b3 "github.com/henrytien/behavior-tree"
+	bt "github.com/henrytien/behavior-tree"
 	. "github.com/henrytien/behavior-tree/config"
 	. "github.com/henrytien/behavior-tree/core"
 	. "github.com/henrytien/behavior-tree/examples/share"
@@ -16,7 +16,7 @@ import (
 
 // 所有的树管理
 var mapTreesByID = sync.Map{}
-var maps = b3.NewRegisterStructMaps()
+var maps = bt.NewRegisterStructMaps()
 
 func init() {
 	//自定义节点注册

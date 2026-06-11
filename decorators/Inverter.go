@@ -1,7 +1,7 @@
 package decorators
 
 import (
-	b3 "github.com/henrytien/behavior-tree"
+	bt "github.com/henrytien/behavior-tree"
 	. "github.com/henrytien/behavior-tree/core"
 )
 
@@ -20,19 +20,19 @@ type Inverter struct {
 /**
  * Tick method.
  * @method tick
- * @param {b3.Tick} tick A tick instance.
+ * @param {bt.Tick} tick A tick instance.
  * @return {Constant} A state constant.
 **/
-func (this *Inverter) OnTick(tick *Tick) b3.Status {
+func (this *Inverter) OnTick(tick *Tick) bt.Status {
 	if this.GetChild() == nil {
-		return b3.ERROR
+		return bt.ERROR
 	}
 
 	var status = this.GetChild().Execute(tick)
-	if status == b3.SUCCESS {
-		status = b3.FAILURE
-	} else if status == b3.FAILURE {
-		status = b3.SUCCESS
+	if status == bt.SUCCESS {
+		status = bt.FAILURE
+	} else if status == bt.FAILURE {
+		status = bt.SUCCESS
 	}
 
 	return status

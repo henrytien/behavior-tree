@@ -3,7 +3,7 @@ package loader
 import (
 	"fmt"
 
-	b3 "github.com/henrytien/behavior-tree"
+	bt "github.com/henrytien/behavior-tree"
 	. "github.com/henrytien/behavior-tree/actions"
 	. "github.com/henrytien/behavior-tree/composites"
 	. "github.com/henrytien/behavior-tree/config"
@@ -11,8 +11,8 @@ import (
 	. "github.com/henrytien/behavior-tree/decorators"
 )
 
-func createBaseStructMaps() *b3.RegisterStructMaps {
-	st := b3.NewRegisterStructMaps()
+func createBaseStructMaps() *bt.RegisterStructMaps {
+	st := bt.NewRegisterStructMaps()
 	// Actions.
 	st.Register("Error", &Error{})
 	st.Register("Failer", &Failer{})
@@ -40,7 +40,7 @@ func createBaseStructMaps() *b3.RegisterStructMaps {
 }
 
 // CreateBehaviorTreeFromConfig creates a behavior tree from a configuration.
-func CreateBehaviorTreeFromConfig(config *BTTreeCfg, extMap *b3.RegisterStructMaps) *BehaviorTree {
+func CreateBehaviorTreeFromConfig(config *BTTreeCfg, extMap *bt.RegisterStructMaps) *BehaviorTree {
 	baseMaps := createBaseStructMaps()
 	tree := NewBehaviorTree()
 	tree.Load(config, baseMaps, extMap)
@@ -50,7 +50,7 @@ func CreateBehaviorTreeFromConfig(config *BTTreeCfg, extMap *b3.RegisterStructMa
 // CreateBevTreeFromConfig creates a behavior tree from a configuration.
 //
 // Deprecated: use CreateBehaviorTreeFromConfig.
-func CreateBevTreeFromConfig(config *BTTreeCfg, extMap *b3.RegisterStructMaps) *BehaviorTree {
+func CreateBevTreeFromConfig(config *BTTreeCfg, extMap *bt.RegisterStructMaps) *BehaviorTree {
 	return CreateBehaviorTreeFromConfig(config, extMap)
 }
 
@@ -59,7 +59,7 @@ func CreateBevTreeFromConfig(config *BTTreeCfg, extMap *b3.RegisterStructMaps) *
 // node name, a missing or mistyped property, …) makes the underlying loader
 // panic; this wrapper recovers from that panic and reports it as an error so
 // callers can handle malformed input without crashing the process.
-func CreateBehaviorTreeFromConfigSafe(config *BTTreeCfg, extMap *b3.RegisterStructMaps) (tree *BehaviorTree, err error) {
+func CreateBehaviorTreeFromConfigSafe(config *BTTreeCfg, extMap *bt.RegisterStructMaps) (tree *BehaviorTree, err error) {
 	defer func() {
 		if r := recover(); r != nil {
 			tree = nil

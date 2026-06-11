@@ -5,7 +5,7 @@ import (
 	"reflect"
 	"testing"
 
-	b3 "github.com/henrytien/behavior-tree"
+	bt "github.com/henrytien/behavior-tree"
 	//. "github.com/henrytien/behavior-tree/actions"
 	//. "github.com/henrytien/behavior-tree/composites"
 	. "github.com/henrytien/behavior-tree/config"
@@ -43,16 +43,16 @@ func (this *LogTest) Initialize(setting *BTNodeCfg) {
 	this.info = setting.GetPropertyAsString("info")
 }
 
-func (this *LogTest) OnTick(tick *Tick) b3.Status {
+func (this *LogTest) OnTick(tick *Tick) bt.Status {
 	fmt.Println("logtest:", this.info)
-	return b3.SUCCESS
+	return bt.SUCCESS
 }
 
 func TestLoadTree(t *testing.T) {
 	treeConfig, ok := LoadTreeCfg("tree.json")
 	if ok {
 		//自定义节点注册
-		maps := b3.NewRegisterStructMaps()
+		maps := bt.NewRegisterStructMaps()
 		maps.Register("Log", new(LogTest))
 
 		//载入

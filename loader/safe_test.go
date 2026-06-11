@@ -3,7 +3,7 @@ package loader
 import (
 	"testing"
 
-	b3 "github.com/henrytien/behavior-tree"
+	bt "github.com/henrytien/behavior-tree"
 	"github.com/henrytien/behavior-tree/config"
 )
 
@@ -23,7 +23,7 @@ func TestCreateBehaviorTreeFromConfigSafe_InvalidNode(t *testing.T) {
 		},
 	}
 
-	tree, err := CreateBehaviorTreeFromConfigSafe(cfg, b3.NewRegisterStructMaps())
+	tree, err := CreateBehaviorTreeFromConfigSafe(cfg, bt.NewRegisterStructMaps())
 	if err == nil {
 		t.Fatal("expected an error for an unknown node name, got nil")
 	}
@@ -47,7 +47,7 @@ func TestCreateBehaviorTreeFromConfigSafe_Valid(t *testing.T) {
 		},
 	}
 
-	tree, err := CreateBehaviorTreeFromConfigSafe(cfg, b3.NewRegisterStructMaps())
+	tree, err := CreateBehaviorTreeFromConfigSafe(cfg, bt.NewRegisterStructMaps())
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}

@@ -1,7 +1,7 @@
 package core
 
 import (
-	b3 "github.com/henrytien/behavior-tree"
+	bt "github.com/henrytien/behavior-tree"
 	. "github.com/henrytien/behavior-tree/config"
 )
 
@@ -19,7 +19,7 @@ type Decorator struct {
 
 func (this *Decorator) Ctor() {
 
-	this.category = b3.DECORATOR
+	this.category = bt.DECORATOR
 }
 
 /**
@@ -33,7 +33,7 @@ func (this *Decorator) Initialize(params *BTNodeCfg) {
 	//this.BaseNode.IBaseWorker = this
 }
 
-//GetChild
+// GetChild
 func (this *Decorator) GetChild() IBaseNode {
 	return this.child
 }

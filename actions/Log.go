@@ -3,7 +3,7 @@ package actions
 import (
 	"fmt"
 
-	b3 "github.com/henrytien/behavior-tree"
+	bt "github.com/henrytien/behavior-tree"
 	. "github.com/henrytien/behavior-tree/config"
 	. "github.com/henrytien/behavior-tree/core"
 )
@@ -18,7 +18,7 @@ func (this *Log) Initialize(setting *BTNodeCfg) {
 	this.info = setting.GetPropertyAsString("info")
 }
 
-func (this *Log) OnTick(tick *Tick) b3.Status {
+func (this *Log) OnTick(tick *Tick) bt.Status {
 	fmt.Println("log:", this.info)
-	return b3.SUCCESS
+	return bt.SUCCESS
 }

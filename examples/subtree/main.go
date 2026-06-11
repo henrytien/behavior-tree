@@ -5,7 +5,7 @@ package main
 
 import (
 	"fmt"
-	b3 "github.com/henrytien/behavior-tree"
+	bt "github.com/henrytien/behavior-tree"
 	. "github.com/henrytien/behavior-tree/config"
 	. "github.com/henrytien/behavior-tree/core"
 	. "github.com/henrytien/behavior-tree/examples/share"
@@ -36,7 +36,7 @@ func main() {
 	}
 
 	//自定义节点注册
-	maps := b3.NewRegisterStructMaps()
+	maps := bt.NewRegisterStructMaps()
 	maps.Register("Log", new(LogTest))
 
 	var firstTree *BehaviorTree

@@ -1,7 +1,7 @@
 package decorators
 
 import (
-	b3 "github.com/henrytien/behavior-tree"
+	bt "github.com/henrytien/behavior-tree"
 	. "github.com/henrytien/behavior-tree/config"
 	. "github.com/henrytien/behavior-tree/core"
 )
@@ -43,21 +43,21 @@ func (this *Limiter) Initialize(setting *BTNodeCfg) {
 /**
  * Tick method.
  * @method tick
- * @param {b3.Tick} tick A tick instance.
+ * @param {bt.Tick} tick A tick instance.
  * @return {Constant} A state constant.
 **/
-func (this *Limiter) OnTick(tick *Tick) b3.Status {
+func (this *Limiter) OnTick(tick *Tick) bt.Status {
 	if this.GetChild() == nil {
-		return b3.ERROR
+		return bt.ERROR
 	}
 	var i = tick.Blackboard.GetInt("i", tick.GetTree().GetID(), this.GetID())
 	if i < this.maxLoop {
 		var status = this.GetChild().Execute(tick)
-		if status == b3.SUCCESS || status == b3.FAILURE {
+		if status == bt.SUCCESS || status == bt.FAILURE {
 			tick.Blackboard.Set("i", i+1, tick.GetTree().GetID(), this.GetID())
 		}
 		return status
 	}
 
-	return b3.FAILURE
+	return bt.FAILURE
 }

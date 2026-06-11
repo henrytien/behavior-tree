@@ -3,7 +3,7 @@ package loader
 import (
 	"testing"
 
-	b3 "github.com/henrytien/behavior-tree"
+	bt "github.com/henrytien/behavior-tree"
 	"github.com/henrytien/behavior-tree/config"
 	"github.com/henrytien/behavior-tree/core"
 )
@@ -23,15 +23,15 @@ func resetTicks() { tickSuccess, tickFail, tickRun = 0, 0, 0 }
 
 type successLeaf struct{ core.Action }
 
-func (n *successLeaf) OnTick(*core.Tick) b3.Status { tickSuccess++; return b3.SUCCESS }
+func (n *successLeaf) OnTick(*core.Tick) bt.Status { tickSuccess++; return bt.SUCCESS }
 
 type failLeaf struct{ core.Action }
 
-func (n *failLeaf) OnTick(*core.Tick) b3.Status { tickFail++; return b3.FAILURE }
+func (n *failLeaf) OnTick(*core.Tick) bt.Status { tickFail++; return bt.FAILURE }
 
 type runLeaf struct{ core.Action }
 
-func (n *runLeaf) OnTick(*core.Tick) b3.Status { tickRun++; return b3.RUNNING }
+func (n *runLeaf) OnTick(*core.Tick) bt.Status { tickRun++; return bt.RUNNING }
 
 // node is a small helper for building a BTNodeCfg.
 func node(id, name, category string, children ...string) config.BTNodeCfg {
@@ -53,7 +53,7 @@ func buildTree(t *testing.T, root string, nodes ...config.BTNodeCfg) *core.Behav
 		cfg.Nodes[n.Id] = n
 	}
 
-	maps := b3.NewRegisterStructMaps()
+	maps := bt.NewRegisterStructMaps()
 	maps.Register("SuccessLeaf", &successLeaf{})
 	maps.Register("FailLeaf", &failLeaf{})
 	maps.Register("RunLeaf", &runLeaf{})
@@ -71,7 +71,7 @@ func TestSequence_AllSucceed(t *testing.T) {
 		node("a", "SuccessLeaf", "action"),
 		node("b", "SuccessLeaf", "action"),
 	)
-	if got := tree.Tick(0, core.NewBlackboard()); got != b3.SUCCESS {
+	if got := tree.Tick(0, core.NewBlackboard()); got != bt.SUCCESS {
 		t.Fatalf("Sequence with all-success children = %v, want SUCCESS", got)
 	}
 	if tickSuccess != 2 {
@@ -86,7 +86,7 @@ func TestSequence_StopsOnFailure(t *testing.T) {
 		node("a", "FailLeaf", "action"),
 		node("b", "SuccessLeaf", "action"),
 	)
-	if got := tree.Tick(0, core.NewBlackboard()); got != b3.FAILURE {
+	if got := tree.Tick(0, core.NewBlackboard()); got != bt.FAILURE {
 		t.Fatalf("Sequence with failing first child = %v, want FAILURE", got)
 	}
 	if tickFail != 1 {
@@ -104,7 +104,7 @@ func TestPriority_PicksFirstNonFailure(t *testing.T) {
 		node("a", "FailLeaf", "action"),
 		node("b", "SuccessLeaf", "action"),
 	)
-	if got := tree.Tick(0, core.NewBlackboard()); got != b3.SUCCESS {
+	if got := tree.Tick(0, core.NewBlackboard()); got != bt.SUCCESS {
 		t.Fatalf("Priority = %v, want SUCCESS", got)
 	}
 	if tickFail != 1 || tickSuccess != 1 {
@@ -118,7 +118,7 @@ func TestPriority_AllFail(t *testing.T) {
 		node("a", "FailLeaf", "action"),
 		node("b", "FailLeaf", "action"),
 	)
-	if got := tree.Tick(0, core.NewBlackboard()); got != b3.FAILURE {
+	if got := tree.Tick(0, core.NewBlackboard()); got != bt.FAILURE {
 		t.Fatalf("Priority with all-fail children = %v, want FAILURE", got)
 	}
 }
@@ -128,7 +128,7 @@ func TestInverter_FlipsResult(t *testing.T) {
 		node("inv", "Inverter", "decorator", "a"),
 		node("a", "FailLeaf", "action"),
 	)
-	if got := tree.Tick(0, core.NewBlackboard()); got != b3.SUCCESS {
+	if got := tree.Tick(0, core.NewBlackboard()); got != bt.SUCCESS {
 		t.Fatalf("Inverter(FAILURE) = %v, want SUCCESS", got)
 	}
 }
@@ -140,7 +140,7 @@ func TestTickPropagation_RunningPropagates(t *testing.T) {
 		node("a", "RunLeaf", "action"),
 		node("b", "SuccessLeaf", "action"),
 	)
-	if got := tree.Tick(0, core.NewBlackboard()); got != b3.RUNNING {
+	if got := tree.Tick(0, core.NewBlackboard()); got != bt.RUNNING {
 		t.Fatalf("Sequence with running first child = %v, want RUNNING", got)
 	}
 	if tickRun != 1 {

@@ -1,7 +1,7 @@
 package core
 
 import (
-	b3 "github.com/henrytien/behavior-tree"
+	bt "github.com/henrytien/behavior-tree"
 	. "github.com/henrytien/behavior-tree/config"
 )
 
@@ -14,11 +14,11 @@ type IAction interface {
  * new custom action nodes, you need to inherit from this class. For example,
  * take a look at the Runner action:
  *
- *     var Runner = b3.Class(b3.Action, {
+ *     var Runner = bt.Class(bt.Action, {
  *       name: 'Runner',
  *
  *       tick: function(tick) {
- *         return b3.RUNNING;
+ *         return bt.RUNNING;
  *       }
  *     });
  *
@@ -32,11 +32,11 @@ type Action struct {
 }
 
 func (this *Action) Ctor() {
-	this.category = b3.ACTION
+	this.category = bt.ACTION
 }
 func (this *Action) Initialize(params *BTNodeCfg) {
 
-	//this.id = b3.CreateUUID()
+	//this.id = bt.CreateUUID()
 	this.BaseNode.Initialize(params)
 	//this.BaseNode.IBaseWorker = this
 	this.parameters = make(map[string]interface{})

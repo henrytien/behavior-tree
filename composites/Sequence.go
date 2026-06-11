@@ -3,7 +3,7 @@ package composites
 import (
 	_ "fmt"
 
-	b3 "github.com/henrytien/behavior-tree"
+	bt "github.com/henrytien/behavior-tree"
 	_ "github.com/henrytien/behavior-tree/config"
 	. "github.com/henrytien/behavior-tree/core"
 )
@@ -15,16 +15,16 @@ type Sequence struct {
 /**
  * Tick method.
  * @method tick
- * @param {b3.Tick} tick A tick instance.
+ * @param {bt.Tick} tick A tick instance.
  * @return {Constant} A state constant.
 **/
-func (this *Sequence) OnTick(tick *Tick) b3.Status {
+func (this *Sequence) OnTick(tick *Tick) bt.Status {
 	//fmt.Println("tick Sequence :", this.GetTitle())
 	for i := 0; i < this.GetChildCount(); i++ {
 		var status = this.GetChild(i).Execute(tick)
-		if status != b3.SUCCESS {
+		if status != bt.SUCCESS {
 			return status
 		}
 	}
-	return b3.SUCCESS
+	return bt.SUCCESS
 }
