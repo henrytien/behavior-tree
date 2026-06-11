@@ -22,6 +22,7 @@ type IBaseNode interface {
 	Initialize(params *BTNodeCfg)
 	GetCategory() string
 	Execute(tick *Tick) bt.Status
+	GetID() string
 	GetName() string
 	GetTitle() string
 	SetBaseNodeWorker(worker IBaseWorker)
@@ -198,6 +199,10 @@ func (this *BaseNode) _execute(tick *Tick) bt.Status {
 
 	// TICK
 	var status = this._tick(tick)
+
+	// Report the node's status now that it is known. _tickNode runs before
+	// OnTick returns, so the status is only available here.
+	tick.reportNodeStatus(this, status)
 
 	// CLOSE
 	if status != bt.RUNNING {

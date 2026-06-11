@@ -2,6 +2,8 @@ package core
 
 import (
 	_ "fmt"
+
+	bt "github.com/henrytien/behavior-tree"
 )
 
 /**
@@ -185,4 +187,14 @@ func (this *Tick) _exitNode(node *BaseNode) {
 
 func (this *Tick) GetTarget() interface{} {
 	return this.target
+}
+
+// reportNodeStatus forwards a visited node's returned status to the debugger,
+// if one is attached. Called from BaseNode._execute once the node's status is
+// known. No-op when no debugger is set, so non-debug ticks pay only a nil
+// interface check.
+func (this *Tick) reportNodeStatus(node IBaseNode, status bt.Status) {
+	if d, ok := this.debug.(Debugger); ok && d != nil {
+		d.OnNodeStatus(this.tree.id, node.GetID(), status)
+	}
 }

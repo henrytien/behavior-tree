@@ -154,6 +154,13 @@ func (tree *BehaviorTree) Tick(target interface{}, blackboard *Blackboard) bt.St
 	tick.Blackboard = blackboard
 	tick.tree = tree
 
+	dbg, _ := tree.debug.(Debugger)
+	if dbg != nil {
+		dbg.OnTickStart(tree.id)
+		// Fire on every return path, including the early return below.
+		defer dbg.OnTickEnd(tree.id)
+	}
+
 	state := tree.root._execute(tick)
 
 	lastOpenNodes := blackboard._getTreeData(tree.id).OpenNodes
