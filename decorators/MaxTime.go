@@ -39,7 +39,7 @@ func (this *MaxTime) Initialize(setting *BTNodeCfg) {
 	this.Decorator.Initialize(setting)
 	this.maxTime = setting.GetPropertyAsInt64("maxTime")
 	if this.maxTime < 1 {
-		panic("maxTime parameter in Limiter decorator is an obligatory parameter")
+		panic("maxTime parameter in MaxTime decorator is an obligatory parameter")
 	}
 }
 
