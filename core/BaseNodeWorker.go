@@ -1,9 +1,6 @@
 package core
 
 import (
-	"fmt"
-	_ "fmt"
-
 	b3 "github.com/henrytien/behavior-tree"
 	_ "github.com/henrytien/behavior-tree/config"
 )
@@ -91,7 +88,7 @@ func (this *BaseWorker) OnOpen(tick *Tick) {
  * @param {Tick} tick A tick instance.
 **/
 func (this *BaseWorker) OnTick(tick *Tick) b3.Status {
-	fmt.Println("tick BaseWorker")
+	b3.Logf("tick BaseWorker")
 	return b3.ERROR
 }
 

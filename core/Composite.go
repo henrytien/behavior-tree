@@ -1,8 +1,6 @@
 package core
 
 import (
-	"fmt"
-
 	b3 "github.com/henrytien/behavior-tree"
 	. "github.com/henrytien/behavior-tree/config"
 )
@@ -58,6 +56,6 @@ func (this *Composite) AddChild(child IBaseNode) {
 	this.children = append(this.children, child)
 }
 func (this *Composite) tick(tick *Tick) b3.Status {
-	fmt.Println("tick Composite1")
+	b3.Logf("tick Composite1")
 	return b3.ERROR
 }
