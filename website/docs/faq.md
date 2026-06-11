@@ -34,7 +34,3 @@ sidebar_position: 5
 ## 上线项目
 
 - [丛林大作战](https://www.taptap.com/app/31608)
-
-## 联系
-
-QQ 群：285728047

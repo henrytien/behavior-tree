@@ -153,7 +153,3 @@ io 类游戏示例：`h5game/server`。`bin/b3.json` 为行为树数据，在编
 ## 上线项目 Shipped Projects
 
 * [丛林大作战](https://www.taptap.com/app/31608)
-
-## 联系 Contact
-
-QQ 群：285728047

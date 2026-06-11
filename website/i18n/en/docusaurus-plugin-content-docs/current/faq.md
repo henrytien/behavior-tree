@@ -34,7 +34,3 @@ sidebar_position: 5
 ## Shipped projects
 
 - [Jungle Battle (丛林大作战)](https://www.taptap.com/app/31608)
-
-## Contact
-
-QQ group: 285728047
