@@ -4,6 +4,7 @@ const sidebars = {
     'intro',
     'getting-started',
     'concepts',
+    'design-notes',
     {
       type: 'category',
       label: '节点参考 / Node Reference',

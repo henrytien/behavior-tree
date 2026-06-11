@@ -26,7 +26,7 @@ sidebar_position: 5
 
 ## Further reading
 
-- Node concepts: [Youdao note](http://note.youdao.com/noteshare?id=4f46dc2144ea62b55f597630f5e666b4&sub=FF0B4E1D7916473E8DFC7242CFC62B69)
+- Node concepts and practical tips: [Design Notes](./design-notes)
 - Behavior tree basics: [behaviac concepts](https://www.behaviac.com/concepts/)
 - A community write-up of legacy behavior3go code: [CSDN blog](https://blog.csdn.net/u013272009/article/details/77131226)
 - An Erlang implementation of behavior3 (with behavior-tree fundamentals): [behavior3erl](https://github.com/dong50252409/behavior3erl)
