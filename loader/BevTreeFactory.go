@@ -1,8 +1,7 @@
 package loader
 
 import (
-	_ "fmt"
-	_ "reflect"
+	"fmt"
 
 	b3 "github.com/henrytien/behavior-tree"
 	. "github.com/henrytien/behavior-tree/actions"
@@ -53,4 +52,23 @@ func CreateBehaviorTreeFromConfig(config *BTTreeCfg, extMap *b3.RegisterStructMa
 // Deprecated: use CreateBehaviorTreeFromConfig.
 func CreateBevTreeFromConfig(config *BTTreeCfg, extMap *b3.RegisterStructMaps) *BehaviorTree {
 	return CreateBehaviorTreeFromConfig(config, extMap)
+}
+
+// CreateBehaviorTreeFromConfigSafe is the error-returning counterpart of
+// CreateBehaviorTreeFromConfig. Loading an invalid configuration (an unknown
+// node name, a missing or mistyped property, …) makes the underlying loader
+// panic; this wrapper recovers from that panic and reports it as an error so
+// callers can handle malformed input without crashing the process.
+func CreateBehaviorTreeFromConfigSafe(config *BTTreeCfg, extMap *b3.RegisterStructMaps) (tree *BehaviorTree, err error) {
+	defer func() {
+		if r := recover(); r != nil {
+			tree = nil
+			if e, ok := r.(error); ok {
+				err = e
+			} else {
+				err = fmt.Errorf("%v", r)
+			}
+		}
+	}()
+	return CreateBehaviorTreeFromConfig(config, extMap), nil
 }
