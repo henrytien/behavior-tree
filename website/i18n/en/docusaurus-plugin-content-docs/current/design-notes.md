@@ -57,5 +57,5 @@ A tree loaded via `SubTree` has its **own memory chain**: the state of memory no
 ## Further reading
 
 - Paper: *Behavior Trees in Robotics and AI: An Introduction*
-- [behaviac concepts](https://www.behaviac.com/concepts/)
+- [Wikipedia: Behavior tree (AI, robotics and control)](https://en.wikipedia.org/wiki/Behavior_tree_(artificial_intelligence,_robotics_and_control))
 - [An Erlang implementation of behavior3 (with fundamentals)](https://github.com/dong50252409/behavior3erl)

@@ -27,7 +27,7 @@ sidebar_position: 5
 ## Further reading
 
 - Node concepts and practical tips: [Design Notes](./design-notes)
-- Behavior tree basics: [behaviac concepts](https://www.behaviac.com/concepts/)
+- Behavior tree basics: [Wikipedia: Behavior tree](https://en.wikipedia.org/wiki/Behavior_tree_(artificial_intelligence,_robotics_and_control))
 - A community write-up of legacy behavior3go code: [CSDN blog](https://blog.csdn.net/u013272009/article/details/77131226)
 - An Erlang implementation of behavior3 (with behavior-tree fundamentals): [behavior3erl](https://github.com/dong50252409/behavior3erl)
 

@@ -57,5 +57,5 @@ sidebar_position: 4
 ## 延伸阅读
 
 - 论文：*Behavior Trees in Robotics and AI: An Introduction*
-- [behaviac 概念文档](https://www.behaviac.com/concepts/)
+- [Wikipedia: Behavior tree（人工智能与机器人）](https://en.wikipedia.org/wiki/Behavior_tree_(artificial_intelligence,_robotics_and_control))
 - [behavior3 的 Erlang 实现（含基础分享）](https://github.com/dong50252409/behavior3erl)

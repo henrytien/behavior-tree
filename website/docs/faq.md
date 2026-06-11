@@ -27,7 +27,7 @@ sidebar_position: 5
 ## 其他参考
 
 - 节点概念与实践提示：[设计要点](./design-notes)
-- 行为树基础知识：[behaviac concepts](https://www.behaviac.com/concepts/)
+- 行为树基础知识：[Wikipedia: Behavior tree](https://en.wikipedia.org/wiki/Behavior_tree_(artificial_intelligence,_robotics_and_control))
 - 其他人写的旧版 behavior3go 代码介绍：[CSDN 博客](https://blog.csdn.net/u013272009/article/details/77131226)
 - behavior3 的 Erlang 实现（含行为树基础分享）：[behavior3erl](https://github.com/dong50252409/behavior3erl)
 
