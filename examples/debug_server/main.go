@@ -47,8 +47,17 @@ func main() {
 	// times — the highlight stays lit while the node waits, giving a smooth
 	// flow rather than a single flash.
 	board := NewBlackboard()
+	ticks := 0
 	for {
 		tree.Tick(0, board)
+
+		// Write a few global variables so the editor's blackboard panel has
+		// something live to show, then publish a snapshot.
+		ticks++
+		board.SetMem("ticks", ticks)
+		board.SetMem("phase", []string{"A", "B", "C"}[(ticks/10)%3])
+		dbg.PublishBlackboard(board.Dump(tree.GetID()))
+
 		time.Sleep(200 * time.Millisecond)
 	}
 }

@@ -51,6 +51,13 @@ type tickMsg struct {
 	Nodes  map[string]string `json:"nodes"`
 }
 
+// blackboardMsg carries a snapshot of runtime variables for the variable panel.
+type blackboardMsg struct {
+	Type   string                 `json:"type"`
+	TreeID string                 `json:"treeId"`
+	Data   map[string]interface{} `json:"data"`
+}
+
 // client is one connected editor. A dedicated writer goroutine drains send, so
 // only one goroutine ever writes to conn (gorilla requires serialized writes).
 type client struct {
@@ -183,9 +190,25 @@ func (s *WSServer) flush() {
 	s.broadcast(msg)
 }
 
+// PublishBlackboard broadcasts a snapshot of runtime variables to all connected
+// clients as a "blackboard" message. Call it from user code after a tick, e.g.
+//
+//	tree.Tick(target, board)
+//	dbg.PublishBlackboard(board.Dump(tree.GetID()))
+//
+// It is independent of the tick coalescing: send it as often (or as rarely) as
+// makes sense for the variables being watched. Safe to call with no clients
+// connected (it just no-ops the marshal/broadcast).
+func (s *WSServer) PublishBlackboard(data map[string]interface{}) {
+	s.mu.Lock()
+	treeID := s.treeID
+	s.mu.Unlock()
+	s.broadcast(blackboardMsg{Type: "blackboard", TreeID: treeID, Data: data})
+}
+
 // broadcast marshals msg once and queues it to every client, dropping the frame
 // for any client whose buffer is full.
-func (s *WSServer) broadcast(msg tickMsg) {
+func (s *WSServer) broadcast(msg interface{}) {
 	data, err := jsonMarshal(msg)
 	if err != nil {
 		return

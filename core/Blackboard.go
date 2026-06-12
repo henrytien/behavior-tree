@@ -204,6 +204,27 @@ func (this *Blackboard) _getTreeData(treeScope string) *TreeData {
 	return treeMem._treeData
 }
 
+// Dump returns a snapshot of the variables visible to a tree: the global
+// (base) memory merged with the given tree's per-tree memory (the latter wins
+// on key conflicts). The result is a fresh copy, so callers — e.g. the debug
+// WebSocket server running on another goroutine — can read it safely without
+// racing further blackboard writes. Per-node memory is not included; it is
+// keyed by node and not generally useful as a flat variable view.
+func (this *Blackboard) Dump(treeScope string) map[string]interface{} {
+	out := make(map[string]interface{})
+	for k, v := range this._baseMemory._memory {
+		out[k] = v
+	}
+	if len(treeScope) > 0 {
+		if treeMem, ok := this._treeMemory[treeScope]; ok {
+			for k, v := range treeMem._memory {
+				out[k] = v
+			}
+		}
+	}
+	return out
+}
+
 /**
  * Retrieves a value in the blackboard. If treeScope and nodeScope are
  * provided, this method will retrieve the value from the per node per tree

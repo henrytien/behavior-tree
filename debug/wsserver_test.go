@@ -159,6 +159,36 @@ func TestWSServer_SeqIncreases(t *testing.T) {
 	}
 }
 
+func TestWSServer_PublishBlackboard(t *testing.T) {
+	s, url, cleanup := newTestServer(t)
+	defer cleanup()
+	s.OnTickStart("tree-1")
+
+	c, _, err := websocket.DefaultDialer.Dial(url, nil)
+	if err != nil {
+		t.Fatalf("dial: %v", err)
+	}
+	defer c.Close()
+	readJSON(t, c) // hello
+
+	s.PublishBlackboard(map[string]interface{}{"ticks": 7, "phase": "B"})
+
+	msg := readJSON(t, c)
+	if msg["type"] != "blackboard" {
+		t.Fatalf("message type = %v, want blackboard", msg["type"])
+	}
+	data, ok := msg["data"].(map[string]any)
+	if !ok {
+		t.Fatalf("data field missing or wrong type: %v", msg["data"])
+	}
+	if data["phase"] != "B" {
+		t.Fatalf("phase = %v, want B", data["phase"])
+	}
+	if data["ticks"].(float64) != 7 {
+		t.Fatalf("ticks = %v, want 7", data["ticks"])
+	}
+}
+
 func TestStatusString(t *testing.T) {
 	cases := map[bt.Status]string{
 		bt.SUCCESS: "success",
