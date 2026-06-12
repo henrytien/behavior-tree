@@ -198,3 +198,13 @@ func (this *Tick) reportNodeStatus(node IBaseNode, status bt.Status) {
 		d.OnNodeStatus(this.tree.id, node.GetID(), status)
 	}
 }
+
+// enterNodeBreakpoint gives a breakpoint-capable debugger the chance to pause
+// before this node ticks. If a breakpoint is set on the node, the controller
+// blocks here, freezing the tick (and the calling goroutine) until the client
+// continues. No-op unless the debugger implements BreakpointController.
+func (this *Tick) enterNodeBreakpoint(node IBaseNode) {
+	if c, ok := this.debug.(BreakpointController); ok && c != nil {
+		c.OnNodeEnter(this.tree.id, node.GetID())
+	}
+}

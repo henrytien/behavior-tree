@@ -189,6 +189,156 @@ func TestWSServer_PublishBlackboard(t *testing.T) {
 	}
 }
 
+func TestWSServer_BreakpointPausesAndContinues(t *testing.T) {
+	s, url, cleanup := newTestServer(t)
+	defer cleanup()
+	s.OnTickStart("tree-1")
+
+	c, _, err := websocket.DefaultDialer.Dial(url, nil)
+	if err != nil {
+		t.Fatalf("dial: %v", err)
+	}
+	defer c.Close()
+	readJSON(t, c) // hello
+
+	// Set a breakpoint on node-a via the control channel.
+	if err := c.WriteJSON(map[string]string{"type": "setBreakpoint", "nodeId": "node-a"}); err != nil {
+		t.Fatalf("write setBreakpoint: %v", err)
+	}
+	// Give the server a moment to register it before the tick enters the node.
+	waitFor(t, func() bool {
+		s.bpMu.Lock()
+		defer s.bpMu.Unlock()
+		return s.breakpoints["node-a"]
+	})
+
+	// Simulate the tick goroutine entering node-a — this must block.
+	entered := make(chan struct{})
+	returned := make(chan struct{})
+	go func() {
+		close(entered)
+		s.OnNodeEnter("tree-1", "node-a")
+		close(returned)
+	}()
+	<-entered
+
+	// The editor should receive a 'paused' message naming the node.
+	msg := readUntilType(t, c, "paused")
+	if msg["nodeId"] != "node-a" {
+		t.Fatalf("paused nodeId = %v, want node-a", msg["nodeId"])
+	}
+
+	// OnNodeEnter must still be blocked.
+	select {
+	case <-returned:
+		t.Fatal("OnNodeEnter returned before continue")
+	default:
+	}
+
+	// Continue — the tick goroutine should unblock and the editor see 'resumed'.
+	if err := c.WriteJSON(map[string]string{"type": "continue"}); err != nil {
+		t.Fatalf("write continue: %v", err)
+	}
+	select {
+	case <-returned:
+	case <-time.After(2 * time.Second):
+		t.Fatal("OnNodeEnter did not return after continue")
+	}
+	readUntilType(t, c, "resumed")
+}
+
+func TestWSServer_StepWhileRunningPausesNextNode(t *testing.T) {
+	s, url, cleanup := newTestServer(t)
+	defer cleanup()
+	s.OnTickStart("tree-1")
+
+	c, _, err := websocket.DefaultDialer.Dial(url, nil)
+	if err != nil {
+		t.Fatalf("dial: %v", err)
+	}
+	defer c.Close()
+	readJSON(t, c) // hello
+
+	// No breakpoint set. Issuing "step" while running must arm stepping so the
+	// next node entered pauses.
+	if err := c.WriteJSON(map[string]string{"type": "step"}); err != nil {
+		t.Fatalf("write step: %v", err)
+	}
+	waitFor(t, func() bool {
+		s.bpMu.Lock()
+		defer s.bpMu.Unlock()
+		return s.stepping
+	})
+
+	returned := make(chan struct{})
+	go func() {
+		s.OnNodeEnter("tree-1", "next-node")
+		close(returned)
+	}()
+
+	msg := readUntilType(t, c, "paused")
+	if msg["nodeId"] != "next-node" {
+		t.Fatalf("paused nodeId = %v, want next-node", msg["nodeId"])
+	}
+	select {
+	case <-returned:
+		t.Fatal("OnNodeEnter returned before continue")
+	default:
+	}
+
+	if err := c.WriteJSON(map[string]string{"type": "continue"}); err != nil {
+		t.Fatalf("write continue: %v", err)
+	}
+	select {
+	case <-returned:
+	case <-time.After(2 * time.Second):
+		t.Fatal("OnNodeEnter did not return after continue")
+	}
+}
+
+func TestWSServer_NoBreakpointDoesNotBlock(t *testing.T) {
+	s, _, cleanup := newTestServer(t)
+	defer cleanup()
+	s.OnTickStart("tree-1")
+
+	// With no breakpoint set, OnNodeEnter must return immediately.
+	done := make(chan struct{})
+	go func() {
+		s.OnNodeEnter("tree-1", "anything")
+		close(done)
+	}()
+	select {
+	case <-done:
+	case <-time.After(time.Second):
+		t.Fatal("OnNodeEnter blocked with no breakpoint set")
+	}
+}
+
+// waitFor polls cond up to ~1s, failing the test if it never becomes true.
+func waitFor(t *testing.T, cond func() bool) {
+	t.Helper()
+	for i := 0; i < 100; i++ {
+		if cond() {
+			return
+		}
+		time.Sleep(10 * time.Millisecond)
+	}
+	t.Fatal("condition not met in time")
+}
+
+// readUntilType reads frames until one of the given type arrives.
+func readUntilType(t *testing.T, c *websocket.Conn, typ string) map[string]any {
+	t.Helper()
+	for i := 0; i < 20; i++ {
+		m := readJSON(t, c)
+		if m["type"] == typ {
+			return m
+		}
+	}
+	t.Fatalf("did not receive a %q frame", typ)
+	return nil
+}
+
 func TestStatusString(t *testing.T) {
 	cases := map[bt.Status]string{
 		bt.SUCCESS: "success",

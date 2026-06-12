@@ -58,6 +58,27 @@ type blackboardMsg struct {
 	Data   map[string]interface{} `json:"data"`
 }
 
+// pausedMsg tells the editor the tick is frozen on a node (breakpoint hit).
+type pausedMsg struct {
+	Type   string `json:"type"`
+	TreeID string `json:"treeId"`
+	NodeID string `json:"nodeId"`
+}
+
+// resumedMsg tells the editor the tick has been released.
+type resumedMsg struct {
+	Type   string `json:"type"`
+	TreeID string `json:"treeId"`
+}
+
+// controlMsg is an inbound command from the editor (editor → Go).
+//   - setBreakpoint / clearBreakpoint carry a nodeId
+//   - continue / step / clearAllBreakpoints carry none
+type controlMsg struct {
+	Type   string `json:"type"`
+	NodeID string `json:"nodeId"`
+}
+
 // client is one connected editor. A dedicated writer goroutine drains send, so
 // only one goroutine ever writes to conn (gorilla requires serialized writes).
 type client struct {
@@ -81,9 +102,24 @@ type WSServer struct {
 	pending map[string]string
 	seq     uint64
 
+	// Breakpoint state, guarded by bpMu (kept separate from mu so the tick
+	// goroutine can block on a breakpoint without holding the broadcast lock).
+	bpMu        sync.Mutex
+	breakpoints map[string]bool
+	stepping    bool             // pause at the next node entered, regardless of breakpoints
+	resumeCh    chan resumeCmd   // non-nil only while paused; the tick goroutine waits on it
+
 	done   chan struct{}
 	closed atomic.Bool
 }
+
+// resumeCmd tells a paused tick how to continue.
+type resumeCmd int
+
+const (
+	resumeContinue resumeCmd = iota // run until the next breakpoint
+	resumeStep                      // pause again at the next node entered
+)
 
 // NewWSServer creates a WSServer and starts listening on addr (e.g. ":6112").
 // Clients connect to the /debug path. Call Close to stop.
@@ -109,10 +145,11 @@ func newServer(flushInterval time.Duration) *WSServer {
 			// production deployments if network exposure is a concern.
 			CheckOrigin: func(*http.Request) bool { return true },
 		},
-		clients: make(map[*client]struct{}),
-		last:    make(map[string]string),
-		pending: make(map[string]string),
-		done:    make(chan struct{}),
+		clients:     make(map[*client]struct{}),
+		last:        make(map[string]string),
+		pending:     make(map[string]string),
+		breakpoints: make(map[string]bool),
+		done:        make(chan struct{}),
 	}
 }
 
@@ -157,6 +194,95 @@ func (s *WSServer) OnNodeStatus(treeID, nodeID string, status bt.Status) {
 // OnTickEnd is a no-op: the flush loop owns send timing so a high tick rate
 // does not translate into a high send rate.
 func (s *WSServer) OnTickEnd(treeID string) {}
+
+// --- breakpoints (core.BreakpointController) ---
+
+// OnNodeEnter blocks the tick goroutine if a breakpoint is set on this node (or
+// the client is single-stepping). It flushes the current statuses first so the
+// editor's view matches the frozen moment, sends a "paused" message, then waits
+// for a continue/step command. Returns immediately when nothing pauses it.
+func (s *WSServer) OnNodeEnter(treeID, nodeID string) {
+	s.bpMu.Lock()
+	pause := s.stepping || s.breakpoints[nodeID]
+	if !pause {
+		s.bpMu.Unlock()
+		return
+	}
+	// Stepping is a one-shot: consume it so we stop exactly once per step.
+	s.stepping = false
+	ch := make(chan resumeCmd, 1)
+	s.resumeCh = ch
+	s.bpMu.Unlock()
+
+	// Make the editor's status/blackboard view reflect this exact instant.
+	s.flush()
+	s.broadcast(pausedMsg{Type: "paused", TreeID: treeID, NodeID: nodeID})
+
+	// Freeze here until the client resumes (or the server closes).
+	select {
+	case cmd := <-ch:
+		if cmd == resumeStep {
+			s.bpMu.Lock()
+			s.stepping = true
+			s.bpMu.Unlock()
+		}
+	case <-s.done:
+	}
+
+	s.bpMu.Lock()
+	s.resumeCh = nil
+	s.bpMu.Unlock()
+
+	s.broadcast(resumedMsg{Type: "resumed", TreeID: treeID})
+}
+
+// handleControl applies one inbound control command from a client.
+func (s *WSServer) handleControl(m controlMsg) {
+	switch m.Type {
+	case "setBreakpoint":
+		s.bpMu.Lock()
+		s.breakpoints[m.NodeID] = true
+		s.bpMu.Unlock()
+	case "clearBreakpoint":
+		s.bpMu.Lock()
+		delete(s.breakpoints, m.NodeID)
+		s.bpMu.Unlock()
+	case "clearAllBreakpoints":
+		s.bpMu.Lock()
+		s.breakpoints = make(map[string]bool)
+		s.bpMu.Unlock()
+	case "continue":
+		s.resume(resumeContinue)
+	case "step":
+		// If a tick is paused, resume it and re-pause at the next node. If
+		// nothing is paused (the tree is running freely), arm stepping so the
+		// next node entered pauses — this makes Step work at any time, not only
+		// after a breakpoint hit.
+		s.bpMu.Lock()
+		paused := s.resumeCh != nil
+		if !paused {
+			s.stepping = true
+		}
+		s.bpMu.Unlock()
+		if paused {
+			s.resume(resumeStep)
+		}
+	}
+}
+
+// resume releases a paused tick, if one is waiting. Safe to call when not
+// paused (it just no-ops).
+func (s *WSServer) resume(cmd resumeCmd) {
+	s.bpMu.Lock()
+	ch := s.resumeCh
+	s.bpMu.Unlock()
+	if ch != nil {
+		select {
+		case ch <- cmd:
+		default: // already signaled; ignore duplicate
+		}
+	}
+}
 
 // --- flushing ---
 
@@ -262,14 +388,19 @@ func (s *WSServer) writePump(c *client) {
 	}
 }
 
-// readPump discards inbound messages and detects disconnect. The control
-// channel (editor → Go) is reserved for a future phase. On return the client is
-// unregistered and its connection and send channel are closed.
+// readPump reads inbound control messages (breakpoints, continue, step) and
+// detects disconnect. On return the client is unregistered and its connection
+// and send channel are closed.
 func (s *WSServer) readPump(c *client) {
 	defer s.removeClient(c)
 	for {
-		if _, _, err := c.conn.ReadMessage(); err != nil {
+		_, data, err := c.conn.ReadMessage()
+		if err != nil {
 			return
+		}
+		var m controlMsg
+		if jsonUnmarshal(data, &m) == nil && m.Type != "" {
+			s.handleControl(m)
 		}
 	}
 }
@@ -317,6 +448,9 @@ func (s *WSServer) Addr() string {
 
 // jsonMarshal is a thin wrapper so the marshal strategy lives in one place.
 func jsonMarshal(v any) ([]byte, error) { return json.Marshal(v) }
+
+// jsonUnmarshal is the inbound counterpart of jsonMarshal.
+func jsonUnmarshal(data []byte, v any) error { return json.Unmarshal(data, v) }
 
 // cloneMap returns a shallow copy so the caller can read a snapshot without
 // holding the lock.

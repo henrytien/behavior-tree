@@ -197,6 +197,11 @@ func (this *BaseNode) _execute(tick *Tick) bt.Status {
 		this._open(tick)
 	}
 
+	// BREAKPOINT: give a breakpoint-capable debugger the chance to freeze
+	// here, before this node ticks, so a paused node reflects the state at the
+	// moment of the hit (e.g. just before a skill action runs).
+	tick.enterNodeBreakpoint(this)
+
 	// TICK
 	var status = this._tick(tick)
 

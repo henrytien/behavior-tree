@@ -29,3 +29,24 @@ type Debugger interface {
 	// closes from the previous tick have run.
 	OnTickEnd(treeID string)
 }
+
+// BreakpointController is an OPTIONAL extension of Debugger. A debugger that
+// also implements it can pause execution at a node: the tree calls
+// OnNodeEnter before a node ticks, and if the call blocks (because a breakpoint
+// is set on that node), the whole tick — and the goroutine that called
+// BehaviorTree.Tick — freezes there until the controller returns. This is how
+// "stop the instant a skill fires" works: the freeze happens before the node's
+// OnTick runs, so the blackboard reflects the moment of the hit.
+//
+// Because it blocks the tick goroutine, only enable breakpoints for debugging
+// or stress testing, never in a latency-sensitive production tick loop.
+//
+// The type assertion for this interface is skipped entirely when no debugger
+// is set, so non-debug trees pay nothing.
+type BreakpointController interface {
+	// OnNodeEnter is called just before a node's OnTick runs. Implementations
+	// block here while the node is paused on a breakpoint, and return once the
+	// client issues continue/step (or the controller is disabled). It returns
+	// immediately when no breakpoint applies.
+	OnNodeEnter(treeID, nodeID string)
+}
