@@ -1,0 +1,74 @@
+{
+  "id": "demo-flow-tree-0001",
+  "title": "Debug Flow Demo",
+  "description": "Sequential waits so the live debugger shows nodes turn RUNNING (blue) then SUCCESS (green) one after another, looping forever.",
+  "root": "n-repeat",
+  "properties": {},
+  "nodes": {
+    "n-repeat": {
+      "id": "n-repeat",
+      "name": "Repeater",
+      "category": "decorator",
+      "title": "Loop forever",
+      "description": "",
+      "properties": { "maxLoop": 100000 },
+      "display": { "x": 0, "y": -260 },
+      "child": "n-seq"
+    },
+    "n-seq": {
+      "id": "n-seq",
+      "name": "MemSequence",
+      "category": "composite",
+      "title": "Step through",
+      "description": "",
+      "properties": {},
+      "display": { "x": 0, "y": -160 },
+      "children": ["n-wait1", "n-log1", "n-wait2", "n-log2", "n-wait3"]
+    },
+    "n-wait1": {
+      "id": "n-wait1",
+      "name": "Wait",
+      "category": "action",
+      "title": "Wait 2s (A)",
+      "description": "",
+      "properties": { "milliseconds": 2000 },
+      "display": { "x": -300, "y": 0 }
+    },
+    "n-log1": {
+      "id": "n-log1",
+      "name": "Log",
+      "category": "action",
+      "title": "Log A",
+      "description": "",
+      "properties": { "info": "step A done" },
+      "display": { "x": -150, "y": 0 }
+    },
+    "n-wait2": {
+      "id": "n-wait2",
+      "name": "Wait",
+      "category": "action",
+      "title": "Wait 2s (B)",
+      "description": "",
+      "properties": { "milliseconds": 2000 },
+      "display": { "x": 0, "y": 0 }
+    },
+    "n-log2": {
+      "id": "n-log2",
+      "name": "Log",
+      "category": "action",
+      "title": "Log B",
+      "description": "",
+      "properties": { "info": "step B done" },
+      "display": { "x": 150, "y": 0 }
+    },
+    "n-wait3": {
+      "id": "n-wait3",
+      "name": "Wait",
+      "category": "action",
+      "title": "Wait 2s (C)",
+      "description": "",
+      "properties": { "milliseconds": 2000 },
+      "display": { "x": 300, "y": 0 }
+    }
+  }
+}
