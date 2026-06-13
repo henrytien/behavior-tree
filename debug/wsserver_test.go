@@ -339,6 +339,35 @@ func readUntilType(t *testing.T, c *websocket.Conn, typ string) map[string]any {
 	return nil
 }
 
+func TestWSServer_WaitForClient(t *testing.T) {
+	s, url, cleanup := newTestServer(t)
+	defer cleanup()
+
+	// Times out when no client connects.
+	if s.WaitForClient(50 * time.Millisecond) {
+		t.Fatal("WaitForClient returned true with no client connected")
+	}
+
+	// Returns true once a client connects.
+	done := make(chan bool, 1)
+	go func() { done <- s.WaitForClient(2 * time.Second) }()
+
+	c, _, err := websocket.DefaultDialer.Dial(url, nil)
+	if err != nil {
+		t.Fatalf("dial: %v", err)
+	}
+	defer c.Close()
+
+	select {
+	case ok := <-done:
+		if !ok {
+			t.Fatal("WaitForClient returned false after a client connected")
+		}
+	case <-time.After(2 * time.Second):
+		t.Fatal("WaitForClient did not return after a client connected")
+	}
+}
+
 func TestStatusString(t *testing.T) {
 	cases := map[bt.Status]string{
 		bt.SUCCESS: "success",

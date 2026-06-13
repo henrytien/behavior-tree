@@ -101,6 +101,10 @@ type WSServer struct {
 	last    map[string]string
 	pending map[string]string
 	seq     uint64
+	// connected is closed the first time any client connects, so WaitForClient
+	// can block startup until the editor is attached.
+	connected     chan struct{}
+	connectedOnce sync.Once
 
 	// Breakpoint state, guarded by bpMu (kept separate from mu so the tick
 	// goroutine can block on a breakpoint without holding the broadcast lock).
@@ -149,6 +153,7 @@ func newServer(flushInterval time.Duration) *WSServer {
 		last:        make(map[string]string),
 		pending:     make(map[string]string),
 		breakpoints: make(map[string]bool),
+		connected:   make(chan struct{}),
 		done:        make(chan struct{}),
 	}
 }
@@ -361,6 +366,8 @@ func (s *WSServer) handleWS(w http.ResponseWriter, r *http.Request) {
 	s.mu.Lock()
 	s.clients[c] = struct{}{}
 	hello := helloMsg{Type: "hello", TreeID: s.treeID, NodeCount: len(s.last)}
+	// Unblock WaitForClient on the first connection.
+	s.connectedOnce.Do(func() { close(s.connected) })
 	// Snapshot current statuses so a late-joining client sees live state
 	// immediately, not only nodes that change after it connects.
 	snapshot := tickMsg{Type: "tick", TreeID: s.treeID, Seq: s.seq, Nodes: cloneMap(s.last)}
@@ -435,6 +442,44 @@ func (s *WSServer) Close() error {
 		return s.httpServer.Close()
 	}
 	return nil
+}
+
+// PauseOnFirstNode arms a one-shot pause so the very next node entered freezes,
+// as if the user had pressed Step. Combined with WaitForClient, this lets the
+// editor attach, see the tree paused at the first node, set breakpoints, and
+// then Continue — so fast one-shot startup flows (e.g. login) can be debugged
+// from the start instead of running past before a breakpoint can be placed.
+func (s *WSServer) PauseOnFirstNode() {
+	s.bpMu.Lock()
+	s.stepping = true
+	s.bpMu.Unlock()
+}
+
+// WaitForClient blocks until the first client connects, the timeout elapses,
+// or the server closes. It returns true if a client connected. Use it to hold
+// startup until the editor is attached, so one-shot startup flows (e.g. a login
+// subtree) can be watched from the very first tick.
+//
+// A non-positive timeout waits indefinitely (until a client connects or Close).
+func (s *WSServer) WaitForClient(timeout time.Duration) bool {
+	if timeout <= 0 {
+		select {
+		case <-s.connected:
+			return true
+		case <-s.done:
+			return false
+		}
+	}
+	t := time.NewTimer(timeout)
+	defer t.Stop()
+	select {
+	case <-s.connected:
+		return true
+	case <-t.C:
+		return false
+	case <-s.done:
+		return false
+	}
 }
 
 // Addr returns the address the HTTP server is listening on, or "" if not
